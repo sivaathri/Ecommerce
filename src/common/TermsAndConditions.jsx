@@ -38,10 +38,6 @@ export default function TermsAndConditions() {
 
     try {
       setLoading(true);
-      //   const response = await axios.post(
-      //     "https://yourapi.com/contact",
-      //     formData
-      //   );
       const response = await ContactEmail({formData});
       console.log(response);
       alert("Message sent successfully ✅");

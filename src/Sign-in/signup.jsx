@@ -91,8 +91,8 @@ export default function SignUp({ setShowSignUp, setShowSignIn }) {
   };
 
   return (
-    <div className="fixed inset-0 flex justify-center items-center z-[999]">
-      <div className="relative w-[850px] h-[650px] bg-white rounded-2xl shadow-2xl overflow-hidden flex">
+    <div className="fixed inset-0 flex justify-center items-center z-[999] px-4">
+      <div className="relative w-full max-w-[850px] h-auto md:h-[650px] bg-white rounded-2xl shadow-2xl overflow-hidden flex flex-col md:flex-row">
         {/* Close Button */}
         <button
           onClick={() => setShowSignUp(false)}
@@ -102,8 +102,8 @@ export default function SignUp({ setShowSignUp, setShowSignIn }) {
           &times;
         </button>
 
-        {/* Left Panel */}
-        <div className="w-1/2 bg-gradient-to-br from-orange-400 to-yellow-500 flex flex-col justify-center items-center text-white p-8">
+        {/* Left Panel (hidden on mobile) */}
+        <div className="hidden md:flex w-1/2 bg-gradient-to-br from-orange-400 to-yellow-500 flex-col justify-center items-center text-white p-8">
           <h2 className="text-3xl font-bold mb-2">Join Us!</h2>
           <p className="text-sm text-center max-w-xs">
             Create an account and start shopping the best deals.
@@ -111,8 +111,8 @@ export default function SignUp({ setShowSignUp, setShowSignIn }) {
         </div>
 
         {/* Right Panel */}
-        <div className="w-1/2 p-8 flex flex-col justify-center">
-          <h3 className="text-2xl font-bold text-gray-800 mb-6">
+        <div className="w-full md:w-1/2 p-6 sm:p-8 flex flex-col justify-center">
+          <h3 className="text-xl sm:text-2xl font-bold text-gray-800 mb-6 text-center md:text-left">
             Create your account
           </h3>
 
@@ -244,7 +244,7 @@ export default function SignUp({ setShowSignUp, setShowSignIn }) {
           </button>
 
           {/* Already have account */}
-          <p className="mt-auto text-xs text-center text-gray-700">
+          <p className="mt-4 md:mt-auto text-xs text-center text-gray-700">
             Already have an account?{" "}
             <button
               onClick={() => {

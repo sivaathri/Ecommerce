@@ -152,9 +152,9 @@ export default function SignIn({ setShowSignIn, setShowSignUp }) {
   };
 
   return (
-    <div className="fixed inset-0 flex justify-center items-center z-[999]">
+    <div className="fixed inset-0 flex justify-center items-center z-[999] px-4">
       {/* ---- SIGN IN MODAL ---- */}
-      <div className="relative w-[850px] h-[500px] bg-white rounded-2xl shadow-2xl overflow-hidden flex">
+      <div className="relative w-full max-w-[850px] h-auto md:h-[500px] bg-white rounded-2xl shadow-2xl overflow-hidden flex flex-col md:flex-row">
         {/* Close Button */}
         <button
           onClick={() => setShowSignIn(false)}
@@ -165,7 +165,7 @@ export default function SignIn({ setShowSignIn, setShowSignUp }) {
         </button>
 
         {/* Left Panel */}
-        <div className="w-1/2 bg-gradient-to-br from-yellow-400 to-orange-500 flex flex-col justify-center items-center text-white p-8 relative overflow-hidden">
+        <div className="hidden md:flex w-1/2 bg-gradient-to-br from-yellow-400 to-orange-500 flex-col justify-center items-center text-white p-8 relative overflow-hidden">
           <h2 className="z-10 text-3xl font-bold mb-2">Welcome Back!</h2>
           <p className="z-10 text-sm text-center max-w-xs">
             Sign in to continue shopping your favorite items and enjoy exclusive
@@ -174,8 +174,8 @@ export default function SignIn({ setShowSignIn, setShowSignUp }) {
         </div>
 
         {/* Right Panel */}
-        <div className="w-1/2 p-8 flex flex-col justify-center">
-          <h3 className="text-2xl font-bold text-gray-800 mb-6">
+        <div className="w-full md:w-1/2 p-6 sm:p-8 flex flex-col justify-center">
+          <h3 className="text-xl sm:text-2xl font-bold text-gray-800 mb-6 text-center md:text-left">
             Sign in to your account
           </h3>
 
@@ -240,7 +240,7 @@ export default function SignIn({ setShowSignIn, setShowSignUp }) {
           </button>
 
           {/* Create Account */}
-          <p className="mt-auto text-xs text-center text-gray-700">
+          <p className="mt-4 md:mt-auto text-xs text-center text-gray-700">
             New to ShopEasy?{" "}
             <button
               onClick={() => {
@@ -257,8 +257,8 @@ export default function SignIn({ setShowSignIn, setShowSignUp }) {
 
       {/* ---- Forgot Password Modal ---- */}
       {showForgotPassword && (
-        <div className="fixed inset-0 flex justify-center items-center z-[1000]">
-          <div className="bg-white p-6 rounded-lg shadow-lg w-[400px]">
+        <div className="fixed inset-0 flex justify-center items-center z-[1000] px-4">
+          <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-[400px]">
             <h3 className="text-lg font-bold mb-4">Reset Password</h3>
             <input
               type="email"
@@ -316,8 +316,8 @@ export default function SignIn({ setShowSignIn, setShowSignUp }) {
 
       {/* ---- New Password Modal ---- */}
       {showNewPasswordModal && (
-        <div className="fixed inset-0 flex justify-center items-center z-[1100]">
-          <div className="bg-white p-6 rounded-lg shadow-lg w-[400px]">
+        <div className="fixed inset-0 flex justify-center items-center z-[1100] px-4">
+          <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-[400px]">
             <h3 className="text-lg font-bold mb-4">Set New Password</h3>
 
             <input
