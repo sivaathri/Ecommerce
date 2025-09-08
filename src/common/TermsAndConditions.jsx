@@ -67,12 +67,12 @@ export default function TermsAndConditions() {
           <strong>Effective Date:</strong> 01 January 2025
         </p>
         <p>
-          <strong>Owner:</strong> Anita
+          <strong>Owner:</strong> AahaSolutions
         </p>
 
         <p className="mt-4 sm:mt-6">
           Welcome to <strong>eshopEasy</strong> (“Website”), owned and operated
-          by <strong>Anita</strong>. By accessing or using this Website, you
+          by <strong>AahaSolutions</strong>. By accessing or using this Website, you
           agree to comply with and be bound by these Terms and Conditions
           (“Terms”). If you do not agree to these Terms, you should not access
           or use the Website. Please read these Terms carefully before
@@ -84,7 +84,7 @@ export default function TermsAndConditions() {
           title="1. Definitions"
           items={[
             "“Website” refers to eshopEasy.com.",
-            "“Owner” refers to Anita, the owner and operator.",
+            "“Owner” refers to AahaSolutions, the owner and operator.",
             "“User” means any person accessing or using the Website.",
             "“Products” means the goods available for purchase.",
             "“Services” includes browsing, ordering, and support.",
@@ -261,7 +261,7 @@ export default function TermsAndConditions() {
                 placeholder="Message *"
                 rows="5"
                 required
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-[#2874f0]"
+                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-[#2874f0] resize-none"
               ></textarea>
               <button
                 type="submit"
