@@ -8,3 +8,5 @@ export const store = configureStore({
 });
 
 // hello
+
+<div>hello</div>
