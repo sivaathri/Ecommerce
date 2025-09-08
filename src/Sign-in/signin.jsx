@@ -1,0 +1,387 @@
+import React, { useState, useEffect } from "react";
+import { FaEnvelope, FaLock, FaEye, FaEyeSlash } from "react-icons/fa";
+import {
+  login,
+  verifyOtp,
+  VerifyEmail,
+  resetPassword,
+} from "../apiroutes/authApi";
+
+export default function SignIn({ setShowSignIn, setShowSignUp }) {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [errors, setErrors] = useState({});
+  const [loading, setLoading] = useState(false);
+
+  // Password visibility
+  const [showPassword, setShowPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+  // Forgot Password
+  const [showForgotPassword, setShowForgotPassword] = useState(false);
+  const [resetEmail, setResetEmail] = useState("");
+  const [resetLoading, setResetLoading] = useState(false);
+  const [showOtpField, setShowOtpField] = useState(false);
+  const [otp, setOtp] = useState("");
+
+  // New Password Modal
+  const [showNewPasswordModal, setShowNewPasswordModal] = useState(false);
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [resetPasswordLoading, setResetPasswordLoading] = useState(false);
+
+  useEffect(() => {
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = "auto";
+    };
+  }, []);
+
+  const isValidEmail = (value) => /\S+@\S+\.\S+/.test(value);
+
+  const handleSignIn = async () => {
+    const fieldErrors = {};
+    if (!email) fieldErrors.email = "Email is required";
+    else if (!isValidEmail(email)) fieldErrors.email = "Invalid email address";
+
+    if (!password) fieldErrors.password = "Password is required";
+    else if (password.length < 6)
+      fieldErrors.password = "Password must be at least 6 characters";
+
+    if (Object.keys(fieldErrors).length > 0) {
+      setErrors(fieldErrors);
+      return;
+    }
+
+    try {
+      setLoading(true);
+      const response = await login({ email, password });
+      alert("Login successful ✅");
+      console.log("User Data:", response.data);
+      setShowSignIn(false);
+    } catch (error) {
+      alert(error.response?.data?.message || "Login failed ❌");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleForgotPassword = async () => {
+    if (!resetEmail) {
+      alert("Please enter your email");
+      return;
+    }
+    if (!isValidEmail(resetEmail)) {
+      alert("Invalid email format");
+      return;
+    }
+
+    try {
+      setResetLoading(true);
+      const response = await VerifyEmail({ email: resetEmail });
+      console.log(response);
+      alert("OTP sent to your email ✅");
+      setShowOtpField(true);
+    } catch (error) {
+      alert(error.response?.data?.message || "Failed to send reset link ❌");
+    } finally {
+      setResetLoading(false);
+    }
+  };
+
+  const handleVerifyOtp = async () => {
+    if (!otp) {
+      alert("Please enter the OTP");
+      return;
+    }
+
+    try {
+      const response = await verifyOtp({ otp: otp, email: resetEmail });
+      console.log(response);
+      alert("OTP verified ✅");
+      setShowOtpField(false);
+      setOtp("");
+      setShowNewPasswordModal(true);
+    } catch (error) {
+      alert(error.response?.data?.message || "Invalid OTP ❌");
+    }
+  };
+
+  const handleResetPassword = async () => {
+    if (!resetEmail) {
+      alert("Email is required");
+      return;
+    }
+    if (!isValidEmail(resetEmail)) {
+      alert("Invalid email format");
+      return;
+    }
+    if (!newPassword || !confirmPassword) {
+      alert("Please fill all fields");
+      return;
+    }
+    if (newPassword.length < 6) {
+      alert("Password must be at least 6 characters");
+      return;
+    }
+    if (newPassword !== confirmPassword) {
+      alert("Passwords do not match ❌");
+      return;
+    }
+
+    try {
+      setResetPasswordLoading(true);
+      const response = await resetPassword({
+        email: resetEmail,
+        newPassword: newPassword,
+      });
+      console.log(response);
+      alert("Password reset successful ✅");
+
+      setShowForgotPassword(false);
+      setShowNewPasswordModal(false);
+      setNewPassword("");
+      setConfirmPassword("");
+      setResetEmail("");
+    } catch (error) {
+      alert(error.response?.data?.message || "Password reset failed ❌");
+    } finally {
+      setResetPasswordLoading(false);
+    }
+  };
+
+  return (
+    <div className="fixed inset-0 flex justify-center items-center z-[999]">
+      {/* ---- SIGN IN MODAL ---- */}
+      <div className="relative w-[850px] h-[500px] bg-white rounded-2xl shadow-2xl overflow-hidden flex">
+        {/* Close Button */}
+        <button
+          onClick={() => setShowSignIn(false)}
+          className="absolute top-4 right-4 text-gray-400 hover:text-gray-700 cursor-pointer text-3xl z-20"
+          aria-label="Close"
+        >
+          &times;
+        </button>
+
+        {/* Left Panel */}
+        <div className="w-1/2 bg-gradient-to-br from-yellow-400 to-orange-500 flex flex-col justify-center items-center text-white p-8 relative overflow-hidden">
+          <h2 className="z-10 text-3xl font-bold mb-2">Welcome Back!</h2>
+          <p className="z-10 text-sm text-center max-w-xs">
+            Sign in to continue shopping your favorite items and enjoy exclusive
+            deals.
+          </p>
+        </div>
+
+        {/* Right Panel */}
+        <div className="w-1/2 p-8 flex flex-col justify-center">
+          <h3 className="text-2xl font-bold text-gray-800 mb-6">
+            Sign in to your account
+          </h3>
+
+          {/* Email Input */}
+          <div className="flex flex-col mb-4">
+            <div className="flex items-center border-b border-gray-300 focus-within:border-[#2874f0]">
+              <FaEnvelope className="text-gray-400 text-sm mr-2" />
+              <input
+                type="email"
+                placeholder="Enter your Email"
+                className="w-full outline-none text-sm py-2"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+            </div>
+            {errors.email && (
+              <p className="text-xs text-red-500 mt-1">{errors.email}</p>
+            )}
+          </div>
+
+          {/* Password Input */}
+          <div className="flex flex-col mb-2">
+            <div className="flex items-center border-b border-gray-300 focus-within:border-[#2874f0]">
+              <FaLock className="text-gray-400 text-sm mr-2" />
+              <input
+                type={showPassword ? "text" : "password"}
+                placeholder="Enter Password"
+                className="w-full outline-none text-sm py-2"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+              <span
+                className="text-gray-400 text-sm ml-2 cursor-pointer"
+                onClick={() => setShowPassword(!showPassword)}
+              >
+                {showPassword ? <FaEyeSlash /> : <FaEye />}
+              </span>
+            </div>
+            {errors.password && (
+              <p className="text-xs text-red-500 mt-1">{errors.password}</p>
+            )}
+          </div>
+
+          {/* Forgot Password */}
+          <button
+            type="button"
+            onClick={() => setShowForgotPassword(true)}
+            className="text-xs text-[#2874f0] hover:underline self-end mb-4"
+          >
+            Forgot Password?
+          </button>
+
+          {/* Sign In Button */}
+          <button
+            onClick={handleSignIn}
+            disabled={loading}
+            className={`bg-[#fb641b] hover:bg-[#e65c16] text-white text-sm font-medium py-3 rounded-sm shadow cursor-pointer ${
+              loading ? "opacity-70 cursor-not-allowed" : ""
+            }`}
+          >
+            {loading ? "Signing in..." : "Sign In"}
+          </button>
+
+          {/* Create Account */}
+          <p className="mt-auto text-xs text-center text-gray-700">
+            New to ShopEasy?{" "}
+            <button
+              onClick={() => {
+                setShowSignIn(false);
+                setShowSignUp(true);
+              }}
+              className="text-[#2874f0] font-medium hover:underline cursor-pointer"
+            >
+              Create an account
+            </button>
+          </p>
+        </div>
+      </div>
+
+      {/* ---- Forgot Password Modal ---- */}
+      {showForgotPassword && (
+        <div className="fixed inset-0 flex justify-center items-center z-[1000]">
+          <div className="bg-white p-6 rounded-lg shadow-lg w-[400px]">
+            <h3 className="text-lg font-bold mb-4">Reset Password</h3>
+            <input
+              type="email"
+              placeholder="Enter your email"
+              className="w-full border border-gray-300 rounded px-3 py-2 text-sm mb-4 outline-none focus:border-[#2874f0]"
+              value={resetEmail}
+              onChange={(e) => setResetEmail(e.target.value)}
+            />
+
+            {showOtpField && (
+              <input
+                type="text"
+                placeholder="Enter OTP"
+                className="w-full border border-gray-300 rounded px-3 py-2 text-sm mb-4 outline-none focus:border-[#2874f0]"
+                value={otp}
+                onChange={(e) => setOtp(e.target.value)}
+              />
+            )}
+
+            <div className="flex justify-end space-x-2">
+              <button
+                onClick={() => {
+                  setShowForgotPassword(false);
+                  setShowOtpField(false);
+                  setResetEmail("");
+                  setOtp("");
+                }}
+                className="px-4 py-2 text-sm bg-gray-300 rounded hover:bg-gray-400"
+              >
+                Cancel
+              </button>
+
+              {!showOtpField ? (
+                <button
+                  onClick={handleForgotPassword}
+                  disabled={resetLoading}
+                  className={`px-4 py-2 text-sm bg-[#2874f0] text-white rounded hover:bg-blue-600 ${
+                    resetLoading ? "opacity-70 cursor-not-allowed" : ""
+                  }`}
+                >
+                  {resetLoading ? "Sending..." : "Send Reset Link"}
+                </button>
+              ) : (
+                <button
+                  onClick={handleVerifyOtp}
+                  className="px-4 py-2 text-sm bg-green-600 text-white rounded hover:bg-green-700"
+                >
+                  Verify OTP
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ---- New Password Modal ---- */}
+      {showNewPasswordModal && (
+        <div className="fixed inset-0 flex justify-center items-center z-[1100]">
+          <div className="bg-white p-6 rounded-lg shadow-lg w-[400px]">
+            <h3 className="text-lg font-bold mb-4">Set New Password</h3>
+
+            <input
+              type="email"
+              placeholder="Enter your email"
+              className="w-full border border-gray-300 rounded px-3 py-2 text-sm mb-4 outline-none focus:border-[#2874f0]"
+              value={resetEmail}
+              onChange={(e) => setResetEmail(e.target.value)}
+            />
+
+            {/* New Password */}
+            <div className="flex items-center border-b border-gray-300 focus-within:border-[#2874f0] mb-4">
+              <input
+                type={showNewPassword ? "text" : "password"}
+                placeholder="Enter new password"
+                className="w-full outline-none text-sm py-2"
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
+              />
+              <span
+                className="text-gray-400 text-sm ml-2 cursor-pointer"
+                onClick={() => setShowNewPassword(!showNewPassword)}
+              >
+                {showNewPassword ? <FaEyeSlash /> : <FaEye />}
+              </span>
+            </div>
+
+            {/* Confirm Password */}
+            <div className="flex items-center border-b border-gray-300 focus-within:border-[#2874f0] mb-4">
+              <input
+                type={showConfirmPassword ? "text" : "password"}
+                placeholder="Confirm new password"
+                className="w-full outline-none text-sm py-2"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+              />
+              <span
+                className="text-gray-400 text-sm ml-2 cursor-pointer"
+                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+              >
+                {showConfirmPassword ? <FaEyeSlash /> : <FaEye />}
+              </span>
+            </div>
+
+            <div className="flex justify-end space-x-2">
+              <button
+                onClick={() => setShowNewPasswordModal(false)}
+                className="px-4 py-2 text-sm bg-gray-300 rounded hover:bg-gray-400"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleResetPassword}
+                disabled={resetPasswordLoading}
+                className={`px-4 py-2 text-sm bg-[#2874f0] text-white rounded hover:bg-blue-600 ${
+                  resetPasswordLoading ? "opacity-70 cursor-not-allowed" : ""
+                }`}
+              >
+                {resetPasswordLoading ? "Resetting..." : "Reset Password"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
